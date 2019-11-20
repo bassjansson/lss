@@ -2,7 +2,7 @@ CC       = gcc
 CXX      = g++
 CCFLAGS  = -Wall
 CXXFLAGS = -Wall
-LDFLAGS  =
+LDFLAGS  = -lwiringPi
 
 TARGET  = lssapp
 OBJECTS = main.o
