@@ -5,11 +5,11 @@
 #include <math.h>
 #include "portaudio.h"
 
-using namespace std;
-
-#define SAMPLE_RATE 48000
-#define FRAMES_PER_BUFFER 1024
+#define SAMPLE_RATE        48000
+#define FRAMES_PER_BUFFER  1024
 #define CHANNELS_PER_FRAME 2
+
+using namespace std;
 
 // TODO: Pa_GetErrorText(err)
 
@@ -50,9 +50,9 @@ public:
 
         PaStreamParameters outputParameters;
 
-        outputParameters.device = deviceIndex;
-        outputParameters.channelCount = CHANNELS_PER_FRAME;
-        outputParameters.sampleFormat = paFloat32;
+        outputParameters.device           = deviceIndex;
+        outputParameters.channelCount     = CHANNELS_PER_FRAME;
+        outputParameters.sampleFormat     = paFloat32;
         outputParameters.suggestedLatency = deviceInfo->defaultLowOutputLatency;
         outputParameters.hostApiSpecificStreamInfo = NULL;
 
@@ -82,7 +82,7 @@ public:
         }
 
         return true;
-    }
+    } /* open */
 
     bool close()
     {
@@ -107,13 +107,13 @@ public:
 
 private:
     int paCallbackMethod(
-        const void * inputBuffer,
-        void * outputBuffer,
-        unsigned long framesPerBuffer,
+        const void *                     inputBuffer,
+        void *                           outputBuffer,
+        unsigned long                    framesPerBuffer,
         const PaStreamCallbackTimeInfo * timeInfo,
-        PaStreamCallbackFlags statusFlags)
+        PaStreamCallbackFlags            statusFlags)
     {
-        float * out = (float *)outputBuffer;
+        float * out = (float *) outputBuffer;
         float sine;
         float sineStep = M_PI * 2.0f * sineFreq / SAMPLE_RATE;
 
@@ -136,14 +136,14 @@ private:
     }
 
     static int paCallback(
-        const void * inputBuffer,
-        void * outputBuffer,
-        unsigned long framesPerBuffer,
+        const void *                     inputBuffer,
+        void *                           outputBuffer,
+        unsigned long                    framesPerBuffer,
         const PaStreamCallbackTimeInfo * timeInfo,
-        PaStreamCallbackFlags statusFlags,
-        void * userData)
+        PaStreamCallbackFlags            statusFlags,
+        void *                           userData)
     {
-        return ((Audio *)userData)->paCallbackMethod(
+        return ((Audio *) userData)->paCallbackMethod(
             inputBuffer,
             outputBuffer,
             framesPerBuffer,
@@ -153,15 +153,14 @@ private:
 
     static void paStreamFinished(void * userData)
     {
-        return ((Audio *)userData)->paStreamFinishedMethod();
+        return ((Audio *) userData)->paStreamFinishedMethod();
     }
 
     PaError paInitError = -1;
-    PaStream * stream = NULL;
+    PaStream * stream   = NULL;
 
     float sinePhase = 0.0f;
-    float sineFreq = 220.0f;
+    float sineFreq  = 220.0f;
 };
-
 
 #endif // __AUDIO_H__
