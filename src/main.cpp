@@ -6,13 +6,25 @@
 #include <wiringPi.h>
 #include <wiringSerial.h>
 
+#include "audio.h"
+
 #define SERIAL_PORT "/dev/serial0"
 #define SERIAL_BAUD 115200
+
+#define DEVICE_INDEX 0
 
 using namespace std;
 
 int main(int argc, char ** argv)
 {
+    Audio audio;
+
+    if (!audio.open(DEVICE_INDEX))
+        return 1;
+
+    if (!audio.start())
+        return 1;
+        
     cout << "Trying to open serial port." << endl;
 
     int fd = serialOpen(SERIAL_PORT, SERIAL_BAUD);
@@ -101,6 +113,9 @@ int main(int argc, char ** argv)
     cout << "End command send. Closing serial connection." << endl;
 
     serialClose(fd);
+
+    audio.stop();
+    audio.close();
 
     return 0;
 }

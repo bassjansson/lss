@@ -5,7 +5,7 @@ CXXFLAGS = -Wall
 LDFLAGS  = -lwiringPi -lportaudio
 
 TARGET  = lssapp
-OBJECTS = main2.o
+OBJECTS = main.o
 
 all: $(TARGET)
 
