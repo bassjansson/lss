@@ -2,10 +2,10 @@ CC       = gcc
 CXX      = g++
 CCFLAGS  = -Wall
 CXXFLAGS = -Wall
-LDFLAGS  = -lwiringPi
+LDFLAGS  = -lwiringPi -lportaudio
 
 TARGET  = lssapp
-OBJECTS = main.o
+OBJECTS = main2.o
 
 all: $(TARGET)
 
