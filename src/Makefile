@@ -2,7 +2,7 @@ CC       = gcc
 CXX      = g++
 CCFLAGS  = -Wall
 CXXFLAGS = -Wall
-LDFLAGS  = -lwiringPi -lportaudio
+LDFLAGS  = -lwiringPi -lportaudio -lsndfile
 
 TARGET  = lssapp
 OBJECTS = main.o

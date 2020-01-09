@@ -6,28 +6,35 @@
 #include <wiringPi.h>
 #include <wiringSerial.h>
 
+#include "defines.h"
+#include "track.h"
 #include "audio.h"
 
-#define SERIAL_PORT "/dev/serial0"
-#define SERIAL_BAUD 115200
-
-#define DEVICE_INDEX 0
+#include <sndfile.h>
 
 using namespace std;
 
-int main(int argc, char ** argv)
+int main(int argc, const char * argv[])
 {
-    Audio audio;
+    cout << "[Main] Usage:" << endl;
+    cout << "lssapp <audio-dev>" << endl;
+    cout << endl;
 
-    if (!audio.open(DEVICE_INDEX))
+    int audioDeviceIndex = -1;
+    if (argc > 1) audioDeviceIndex = atoi(argv[1]);
+
+    Track ** tracks = new Track *[NUMBER_OF_TRACKS];
+    for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+        tracks[i] = new Track(i);
+
+    Audio audio(tracks);
+
+    if (!audio.open(audioDeviceIndex))
         return 1;
 
-    if (!audio.start())
-        return 1;
-        
     cout << "Trying to open serial port." << endl;
 
-    int fd = serialOpen(SERIAL_PORT, SERIAL_BAUD);
+    int fd = serialOpen(SERIAL_PORT_NAME, SERIAL_BAUD_RATE);
 
     if (fd < 0)
     {
@@ -68,18 +75,18 @@ int main(int argc, char ** argv)
                 {
                     if (str.length() > 4)
                     {
-                        if (str.substr(0,3) == "POS")
+                        if (str.substr(0, 3) == "POS")
                         {
                             float xyzp[4];
                             int ipos = 4;
                             int opos = 0;
 
-                            for (int i = ipos; i < (int)str.length(); ++i)
+                            for (int i = ipos; i < (int) str.length(); ++i)
                             {
                                 if (str[i] == ',' || str[i] == '\r')
                                 {
                                     xyzp[opos] = atof(str.substr(ipos, i - ipos).c_str());
-                                    ipos = i + 1;
+                                    ipos       = i + 1;
                                     opos++;
                                 }
                             }
@@ -97,7 +104,7 @@ int main(int argc, char ** argv)
                 }
                 else
                 {
-                    str += (char)c;
+                    str += (char) c;
                 }
             }
         }
@@ -114,8 +121,7 @@ int main(int argc, char ** argv)
 
     serialClose(fd);
 
-    audio.stop();
     audio.close();
 
     return 0;
-}
+} // main

@@ -2,26 +2,28 @@
 #define __AUDIO_H__
 
 #include <iostream>
-#include <math.h>
-#include "portaudio.h"
+#include <cmath>
+#include <portaudio.h>
 
-#define SAMPLE_RATE        48000
-#define FRAMES_PER_BUFFER  1024
-#define CHANNELS_PER_FRAME 2
+#include "defines.h"
+#include "track.h"
 
 using namespace std;
-
-// TODO: Pa_GetErrorText(err)
 
 class Audio
 {
 public:
-    Audio()
+    Audio(Track ** tracks) :
+        stream(NULL),
+        numInputChannels(0),
+        numOutputChannels(0),
+        tracks(tracks),
+        currentFrame(0)
     {
         paInitError = Pa_Initialize();
 
         if (paInitError != paNoError)
-            cout << "Failed to initialize PortAudio." << endl;
+            cout << "[Audio] Failed to initialize PortAudio." << endl;
     }
 
     ~Audio()
@@ -30,45 +32,82 @@ public:
             Pa_Terminate();
     }
 
-    bool open(PaDeviceIndex deviceIndex)
+    bool open(PaDeviceIndex deviceIndexAsArg = -1)
     {
         if (paInitError != paNoError)
         {
-            cout << "Cannot open audio stream if PortAudio failed to initialize." << endl;
+            cout << "[Audio] Cannot open audio stream if PortAudio failed to initialize." << endl;
             return false;
         }
 
-        const PaDeviceInfo * deviceInfo = Pa_GetDeviceInfo(deviceIndex);
+        PaDeviceIndex numDevices = Pa_GetDeviceCount();
+        PaDeviceIndex deviceIndex;
+        const PaDeviceInfo * deviceInfo;
 
+        cout << "[Audio] Available audio devices:" << endl;
+        for (deviceIndex = 0; deviceIndex < numDevices; ++deviceIndex)
+        {
+            deviceInfo = Pa_GetDeviceInfo(deviceIndex);
+            cout << deviceIndex << ": (";
+            cout << deviceInfo->maxInputChannels << "i";
+            cout << deviceInfo->maxOutputChannels << ") ";
+            cout << deviceInfo->name << endl;
+        }
+
+        if (deviceIndexAsArg < 0)
+        {
+            cout << "[Audio] Select audio device by index: ";
+            cin >> deviceIndex;
+        }
+        else
+        {
+            deviceIndex = deviceIndexAsArg;
+        }
+
+        deviceInfo = Pa_GetDeviceInfo(deviceIndex);
         if (deviceIndex == paNoDevice || !deviceInfo)
         {
-            cout << "Failed to get device with given index." << endl;
+            cout << "[Audio] Failed to get selected audio device info." << endl;
             return false;
         }
 
-        cout << "Output device name: " << deviceInfo->name << endl;
+        cout << "[Audio] Selected audio device: " << deviceInfo->name << endl << endl;
+
+        numInputChannels  = deviceInfo->maxInputChannels;
+        numOutputChannels = deviceInfo->maxOutputChannels;
+
+        PaSampleFormat sampleFormat = paFloat32;
+        PaTime lowLatency = deviceInfo->defaultLowInputLatency;
+
+        PaStreamParameters inputParameters;
+
+        inputParameters.device           = deviceIndex;
+        inputParameters.channelCount     = numInputChannels;
+        inputParameters.sampleFormat     = sampleFormat;
+        inputParameters.suggestedLatency = lowLatency;
+        inputParameters.hostApiSpecificStreamInfo = NULL;
 
         PaStreamParameters outputParameters;
 
         outputParameters.device           = deviceIndex;
-        outputParameters.channelCount     = CHANNELS_PER_FRAME;
-        outputParameters.sampleFormat     = paFloat32;
-        outputParameters.suggestedLatency = deviceInfo->defaultLowOutputLatency;
+        outputParameters.channelCount     = numOutputChannels;
+        outputParameters.sampleFormat     = sampleFormat;
+        outputParameters.suggestedLatency = lowLatency;
         outputParameters.hostApiSpecificStreamInfo = NULL;
 
         PaError paError = Pa_OpenStream(
             &stream,
-            NULL, // no input parameters
+            &inputParameters,
             &outputParameters,
-            SAMPLE_RATE,
-            FRAMES_PER_BUFFER,
-            paClipOff,
+            AUDIO_SAMPLE_RATE,
+            AUDIO_BUFFER_SIZE,
+            paNoFlag,
             &Audio::paCallback,
             this);
 
         if (paError != paNoError)
         {
-            cout << "Failed to open audio stream." << endl;
+            cout << "[Audio] Failed to open audio stream." << endl;
             return false;
         }
 
@@ -76,63 +115,58 @@ public:
 
         if (paError != paNoError)
         {
-            cout << "Failed to assign stream finished callback." << endl;
+            cout << "[Audio] Failed to assign stream finished callback." << endl;
+            Pa_CloseStream(stream);
+            return false;
+        }
+
+        paError = Pa_StartStream(stream);
+
+        if (paError != paNoError)
+        {
+            cout << "[Audio] Failed to start audio stream." << endl;
             Pa_CloseStream(stream);
             return false;
         }
 
         return true;
-    } /* open */
+    } // open
 
-    bool close()
+    void close()
     {
-        if (!stream) return false;
-
-        return Pa_CloseStream(stream) == paNoError;
-    }
-
-    bool start()
-    {
-        if (!stream) return false;
-
-        return Pa_StartStream(stream) == paNoError;
-    }
-
-    bool stop()
-    {
-        if (!stream) return false;
-
-        return Pa_StopStream(stream) == paNoError;
+        Pa_StopStream(stream);
+        Pa_CloseStream(stream);
     }
 
 private:
     int paCallbackMethod(
-        const void *                     inputBuffer,
-        void *                           outputBuffer,
-        unsigned long                    framesPerBuffer,
+        const float *                    inputBuffer,
+        float *                          outputBuffer,
+        frame_t                          framesPerBuffer,
         const PaStreamCallbackTimeInfo * timeInfo,
         PaStreamCallbackFlags            statusFlags)
     {
-        float * out = (float *) outputBuffer;
-        float sine;
-        float sineStep = M_PI * 2.0f * sineFreq / SAMPLE_RATE;
+        for (frame_t i = 0; i < framesPerBuffer; ++i)
+            for (int c = 0; c < numOutputChannels; ++c)
+                outputBuffer[i * numOutputChannels + c] = 0.0f;
 
-        for (unsigned long i = 0; i < framesPerBuffer; ++i)
-        {
-            sine = sinf(sinePhase + sineStep * i) * 0.5f;
+        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+            tracks[i]->process(
+                inputBuffer,
+                outputBuffer,
+                framesPerBuffer,
+                numInputChannels,
+                numOutputChannels,
+                currentFrame);
 
-            out[i * CHANNELS_PER_FRAME + 0] = sine;
-            out[i * CHANNELS_PER_FRAME + 1] = sine;
-        }
-
-        sinePhase = fmodf(sinePhase + sineStep * framesPerBuffer, M_PI * 2.0f);
+        currentFrame += framesPerBuffer;
 
         return paContinue;
     }
 
     void paStreamFinishedMethod()
     {
-        cout << "Stream Finished." << endl;
+        cout << "[Audio] Stream Finished." << endl;
     }
 
     static int paCallback(
@@ -144,8 +178,8 @@ private:
         void *                           userData)
     {
         return ((Audio *) userData)->paCallbackMethod(
-            inputBuffer,
-            outputBuffer,
+            (float *) inputBuffer,
+            (float *) outputBuffer,
             framesPerBuffer,
             timeInfo,
             statusFlags);
@@ -153,14 +187,17 @@ private:
 
     static void paStreamFinished(void * userData)
     {
-        return ((Audio *) userData)->paStreamFinishedMethod();
+        ((Audio *) userData)->paStreamFinishedMethod();
     }
 
-    PaError paInitError = -1;
-    PaStream * stream   = NULL;
+    PaError paInitError;
+    PaStream * stream;
 
-    float sinePhase = 0.0f;
-    float sineFreq  = 220.0f;
+    int numInputChannels;
+    int numOutputChannels;
+
+    Track ** tracks;
+    frame_t currentFrame;
 };
 
 #endif // __AUDIO_H__
