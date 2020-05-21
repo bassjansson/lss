@@ -3,7 +3,7 @@ CXX      = g++
 CCFLAGS  = -Wall
 CXXFLAGS = -Wall # -Wno-undefined-var-template
 LDFLAGS  =
-LDLIBS   = -lwiringPi -lportaudio # -lportmidi -lsndfile -lfftw3f
+LDLIBS   = -lwiringPi -lportaudio -lportmidi # -lsndfile -lfftw3f
 
 TARGET  = engine
 OBJECTS = Main.o
