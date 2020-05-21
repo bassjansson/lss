@@ -49,6 +49,11 @@ public:
         trackState = STOPPED;
     }
 
+    void setFrequency(float freq)
+    {
+        frequency = freq * 0.2f + frequency * 0.8f;
+    }
+
     void process(
         const float * inputBuffer,
         float *       outputBuffer,

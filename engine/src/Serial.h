@@ -67,7 +67,7 @@ public:
         serialPuts(fd, "\r\r");
         delay(1000);
 
-        serialPuts(fd, cmd);
+        serialPuts(fd, cmd.c_str());
         serialPutchar(fd, '\r');
         delay(1000);
 
@@ -99,12 +99,15 @@ private:
          * pqf : bytes 12, 8-bit integer, position quality factor in percent
          */
 
-        cout << "[Serial] Position: ";
+        // cout << "[Serial] Position: ";
+        //
+        // for (int i = 0; i < XYZP_SIZE; ++i)
+        //     cout << xyzp[i] << ", ";
+        //
+        // cout << endl;
 
-        for (int i = 0; i < XYZP_SIZE; ++i)
-            cout << xyzp[i] << ", ";
-
-        cout << endl;
+        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+            tracks[i]->setFrequency(xyzp[0] / 10.0f * 500.0f + 200.0f);
     }
 
     void ptCallbackMethod(PtTimestamp timeStamp)
