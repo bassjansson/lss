@@ -18,7 +18,7 @@ class Track
 {
 public:
     Track(int trackIndex, int inputChannelLeft, int inputChannelRight) :
-        // trackIndex(trackIndex),
+        trackIndex(trackIndex),
         // inputChannelLeft(inputChannelLeft),
         // inputChannelRight(inputChannelRight),
         trackState(STOPPED),
@@ -51,7 +51,7 @@ public:
 
     void setFrequency(float freq)
     {
-        frequency = freq * 0.2f + frequency * 0.8f;
+        frequency = freq * 0.4f + frequency * 0.6f;
     }
 
     void process(
@@ -68,8 +68,8 @@ public:
         {
             float sine = sin(phase * 2.0f * M_PI) * 0.5f;
 
-            outputBuffer[i * numOutputChannels + LEFT]  += sine;
-            outputBuffer[i * numOutputChannels + RIGHT] += sine;
+            outputBuffer[i * numOutputChannels + LEFT]  += sine * ((trackIndex + 0) % 2);
+            outputBuffer[i * numOutputChannels + RIGHT] += sine * ((trackIndex + 1) % 2);
 
             float slope     = (float) i / framesPerBuffer;
             float phaseStep = (1.0f - slope) * currentPhaseStep + slope * targetPhaseStep;
@@ -96,7 +96,7 @@ public:
     }
 
 private:
-    // const int trackIndex;
+    const int trackIndex;
     // const int inputChannelLeft;
     // const int inputChannelRight;
 

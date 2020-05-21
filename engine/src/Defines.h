@@ -14,7 +14,7 @@
 #define TRACK_BUFFER_LENGTH 60 // seconds
 #define TRACK_NUM_CHANNELS  2
 
-#define NUMBER_OF_TRACKS    1
+#define NUMBER_OF_TRACKS    2
 
 #define LEFT                0
 #define RIGHT               1

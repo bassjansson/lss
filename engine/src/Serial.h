@@ -106,8 +106,10 @@ private:
         //
         // cout << endl;
 
-        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
-            tracks[i]->setFrequency(xyzp[0] / 10.0f * 500.0f + 200.0f);
+        //for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+
+        tracks[0]->setFrequency(xyzp[0] / 8.5f * 300.0f + 200.0f);
+        tracks[1]->setFrequency(xyzp[1] / 4.5f * 300.0f + 500.0f);
     }
 
     void ptCallbackMethod(PtTimestamp timeStamp)
