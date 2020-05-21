@@ -3,6 +3,7 @@
 
 #define SERIAL_PORT_NAME    "/dev/serial0"
 #define SERIAL_BAUD_RATE    115200
+#define SERIAL_TIMER_INT    10 // ms
 
 #define AUDIO_SAMPLE_RATE   44100 // Hz
 #define AUDIO_BUFFER_SIZE   1024  // frames
