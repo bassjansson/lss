@@ -97,7 +97,7 @@ public:
 
         PaError paError = Pa_OpenStream(
             &stream,
-            NULL,// &inputParameters,
+            &inputParameters,
             &outputParameters,
             AUDIO_SAMPLE_RATE,
             AUDIO_BUFFER_SIZE,

@@ -8,6 +8,12 @@
 
 using namespace std;
 
+enum TrackState
+{
+    STOPPED = 0,
+    PLAYING
+};
+
 class Track
 {
 public:
@@ -15,13 +21,33 @@ public:
         // trackIndex(trackIndex),
         // inputChannelLeft(inputChannelLeft),
         // inputChannelRight(inputChannelRight),
+        trackState(STOPPED),
         frequency(500.0f),
         phase(0.0f),
         currentPhaseStep(0.0f)
-    { }
+    {
+        trackLengthFrames = TRACK_BUFFER_LENGTH * AUDIO_SAMPLE_RATE;
+        trackBufferSize   = trackLengthFrames * TRACK_NUM_CHANNELS;
+        trackBuffer       = new float[trackBufferSize];
+
+        for (frame_t i = 0; i < trackBufferSize; ++i)
+            trackBuffer[i] = 0.0f;
+    }
 
     ~Track()
-    { }
+    {
+        delete[] trackBuffer;
+    }
+
+    void startPlayback()
+    {
+        trackState = PLAYING;
+    }
+
+    void stopPlayback()
+    {
+        trackState = STOPPED;
+    }
 
     void process(
         const float * inputBuffer,
@@ -47,12 +73,33 @@ public:
         }
 
         currentPhaseStep = targetPhaseStep;
+
+        // if (trackState == PLAYING)
+        // {
+        //     frame_t p;
+        //
+        //     for (frame_t i = 0; i < framesPerBuffer; ++i)
+        //     {
+        //         p = (currentFrame + i) % trackLengthFrames;
+        //
+        //         outputBuffer[i * numOutputChannels + LEFT] +=
+        //           trackBuffer[p * TRACK_NUM_CHANNELS + LEFT];
+        //         outputBuffer[i * numOutputChannels + RIGHT] +=
+        //           trackBuffer[p * TRACK_NUM_CHANNELS + RIGHT];
+        //     }
+        // }
     }
 
 private:
     // const int trackIndex;
     // const int inputChannelLeft;
     // const int inputChannelRight;
+
+    TrackState trackState;
+
+    frame_t trackLengthFrames;
+    frame_t trackBufferSize;
+    float * trackBuffer;
 
     float frequency;
     float phase;
