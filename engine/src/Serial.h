@@ -31,7 +31,7 @@ public:
     ~Serial()
     { }
 
-    bool open(string& cmd)
+    bool open()
     {
         cout << "[Serial] Trying to open serial port." << endl;
 
@@ -57,6 +57,8 @@ public:
             return false;
         }
 
+        string cmd = "lep";
+
         cout << "[Serial] Sending command: " << cmd << endl;
 
         serialFlush(fd);
@@ -72,7 +74,7 @@ public:
         cout << "[Serial] Command send. Listening to device..." << endl;
 
         return true;
-    }
+    } // open
 
     void close()
     {
@@ -89,6 +91,14 @@ public:
 private:
     void onReceivedPosition()
     {
+        /*
+         * position = x, y, z, pqf : bytes 0-12, position coordinates and quality factor
+         * x : bytes 0-3, 32-bit integer, in millimeters
+         * y : bytes 4-7, 32-bit integer, in millimeters
+         * z : bytes 8-11, 32-bit integer, in millimeters
+         * pqf : bytes 12, 8-bit integer, position quality factor in percent
+         */
+
         cout << "[Serial] Position: ";
 
         for (int i = 0; i < XYZP_SIZE; ++i)
@@ -136,7 +146,7 @@ private:
                 }
             }
         }
-    }
+    } // ptCallbackMethod
 
     static void ptCallback(PtTimestamp timeStamp, void * userData)
     {

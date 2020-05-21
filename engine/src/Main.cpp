@@ -4,6 +4,7 @@
 #include "Defines.h"
 #include "Track.h"
 #include "Audio.h"
+#include "Serial.h"
 // #include "Midi.h"
 
 // #include <sndfile.h>
@@ -35,10 +36,17 @@ int main(int argc, const char * argv[])
         tracks[i] = new Track(i, inputChannelLeft, inputChannelRight);
 
     Audio audio(tracks);
+    Serial serial(tracks);
     // Midi midi(tracks);
 
     if (!audio.open(audioDeviceIndex))
         return 1;
+
+    if (!serial.open())
+    {
+        audio.close();
+        return 1;
+    }
 
     // if (!midi.open(midiDeviceIndex))
     // {
@@ -50,7 +58,10 @@ int main(int argc, const char * argv[])
         usleep(1000000);
 
     // midi.close();
+    serial.close();
     audio.close();
+
+    usleep(2000000);
 
     return 0;
 } // main
