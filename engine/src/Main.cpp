@@ -4,8 +4,7 @@
 #include "Defines.h"
 #include "Track.h"
 #include "Audio.h"
-#include "Serial.h"
-// #include "Midi.h"
+#include "Gpio.h"
 
 // #include <sndfile.h>
 // #include <fftw3.h>
@@ -22,10 +21,8 @@ int main(int argc, const char * argv[])
     int inputChannelRight = 1;
 
     int audioDeviceIndex = -1;
-    // int midiDeviceIndex   = -1;
 
     if (argc > 1) audioDeviceIndex = atoi(argv[1]);
-    // if (argc > 2) midiDeviceIndex = atoi(argv[2]);
 
     cout << "[Main] Selected audio input channel left (" << inputChannelLeft + 1;
     cout << ") and right (" << inputChannelRight + 1 << ")" << endl;
@@ -36,29 +33,21 @@ int main(int argc, const char * argv[])
         tracks[i] = new Track(i, inputChannelLeft, inputChannelRight);
 
     Audio audio(tracks);
-    Serial serial(tracks);
-    // Midi midi(tracks);
+    Gpio gpio(tracks);
 
     if (!audio.open(audioDeviceIndex))
         return 1;
 
-    if (!serial.open())
+    if (!gpio.setup())
     {
         audio.close();
         return 1;
     }
 
-    // if (!midi.open(midiDeviceIndex))
-    // {
-    //     audio.close();
-    //     return 1;
-    // }
-
     while (true)
         usleep(1000000);
 
-    // midi.close();
-    serial.close();
+    gpio.close();
     audio.close();
 
     usleep(2000000);

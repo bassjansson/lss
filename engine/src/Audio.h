@@ -73,11 +73,11 @@ public:
 
         cout << "[Audio] Selected audio device: " << deviceInfo->name << endl << endl;
 
-        numInputChannels  = deviceInfo->maxInputChannels;
-        numOutputChannels = deviceInfo->maxOutputChannels;
+        numInputChannels  = AUDIO_CHANNELS_IN;  // deviceInfo->maxInputChannels;
+        numOutputChannels = AUDIO_CHANNELS_OUT; // deviceInfo->maxOutputChannels;
 
         PaSampleFormat sampleFormat = paFloat32;
-        PaTime lowLatency = deviceInfo->defaultLowInputLatency;
+        PaTime lowLatency = deviceInfo->defaultLowOutputLatency;
 
         PaStreamParameters inputParameters;
 
