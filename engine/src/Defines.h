@@ -15,9 +15,6 @@
 #define AUDIO_CHANNELS_IN   0
 #define AUDIO_CHANNELS_OUT  2
 
-#define TRACK_BUFFER_LENGTH 60 // seconds
-#define TRACK_NUM_CHANNELS  2
-
 #define NUMBER_OF_TRACKS    2
 
 #define LEFT                0

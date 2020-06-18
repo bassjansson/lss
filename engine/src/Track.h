@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <cmath>
+#include <string>
+#include <sndfile.h>
+// #include <fftw3.h>
 
 #include "Defines.h"
 
@@ -18,17 +21,15 @@ class Track
 {
 public:
     Track(int trackIndex, int inputChannelLeft, int inputChannelRight) :
-        trackIndex(trackIndex),
         // inputChannelLeft(inputChannelLeft),
         // inputChannelRight(inputChannelRight),
+        trackIndex(trackIndex),
         trackState(STOPPED),
-        frequency(500.0f),
-        phase(0.0f),
-        currentPhaseStep(0.0f)
+        trackLengthFrames(1),
+        trackNumOfChannels(2)
     {
-        trackLengthFrames = TRACK_BUFFER_LENGTH * AUDIO_SAMPLE_RATE;
-        trackBufferSize   = trackLengthFrames * TRACK_NUM_CHANNELS;
-        trackBuffer       = new float[trackBufferSize];
+        trackBufferSize = trackLengthFrames * trackNumOfChannels;
+        trackBuffer     = new float[trackBufferSize];
 
         for (frame_t i = 0; i < trackBufferSize; ++i)
             trackBuffer[i] = 0.0f;
@@ -38,6 +39,52 @@ public:
     {
         delete[] trackBuffer;
     }
+
+    int getTrackIndex()
+    {
+        return trackIndex;
+    }
+
+    bool loadAudioFile(const char * filePath)
+    {
+        trackState = STOPPED;
+
+        trackLengthFrames  = 1;
+        trackNumOfChannels = 2;
+
+
+        SNDFILE * audioFile;
+        SF_INFO audioFileInfo;
+
+        memset(&audioFileInfo, 0, sizeof(audioFileInfo));
+
+        if (!(audioFile = sf_open(filePath, SFM_READ, &audioFileInfo)))
+        {
+            cout << "[Track] Failed to open audio file: " << sf_strerror(NULL) << endl;
+            return false;
+        }
+
+        trackBufferSize = audioFileInfo.frames * audioFileInfo.channels;
+        trackBuffer     = new float[trackBufferSize];
+
+        frame_t blockBufferSize = AUDIO_BUFFER_SIZE * audioFileInfo.channels;
+        float * blockBuffer     = trackBuffer;
+
+        while (blockBuffer + blockBufferSize <= trackBuffer + trackBufferSize)
+            blockBuffer += sf_read_float(audioFile, blockBuffer, blockBufferSize);
+
+        sf_read_float(audioFile, blockBuffer, trackBuffer - blockBuffer);
+
+        sf_close(audioFile);
+
+
+        trackLengthFrames  = audioFileInfo.frames;
+        trackNumOfChannels = audioFileInfo.channels;
+
+        trackState = PLAYING;
+
+        return true;
+    } // loadAudioFile
 
     void startPlayback()
     {
@@ -51,7 +98,7 @@ public:
 
     void setFrequency(float freq)
     {
-        frequency = freq * 0.4f + frequency * 0.6f;
+        // TODO
     }
 
     void process(
@@ -62,53 +109,34 @@ public:
         int           numOutputChannels,
         frame_t       currentFrame)
     {
-        float targetPhaseStep = frequency / AUDIO_SAMPLE_RATE;
-
-        for (frame_t i = 0; i < framesPerBuffer; ++i)
+        if (trackState == PLAYING)
         {
-            float sine = sin(phase * 2.0f * M_PI) * 0.5f;
+            frame_t p;
 
-            outputBuffer[i * numOutputChannels + LEFT]  += sine * ((trackIndex + 0) % 2);
-            outputBuffer[i * numOutputChannels + RIGHT] += sine * ((trackIndex + 1) % 2);
+            for (frame_t i = 0; i < framesPerBuffer; ++i)
+            {
+                p = (currentFrame + i) % trackLengthFrames;
 
-            float slope     = (float) i / framesPerBuffer;
-            float phaseStep = (1.0f - slope) * currentPhaseStep + slope * targetPhaseStep;
-
-            phase = fmodf(phase + phaseStep, 1.0f);
+                outputBuffer[i * numOutputChannels + LEFT] +=
+                  trackBuffer[p * trackNumOfChannels + LEFT];
+                outputBuffer[i * numOutputChannels + RIGHT] +=
+                  trackBuffer[p * trackNumOfChannels + RIGHT];
+            }
         }
-
-        currentPhaseStep = targetPhaseStep;
-
-        // if (trackState == PLAYING)
-        // {
-        //     frame_t p;
-        //
-        //     for (frame_t i = 0; i < framesPerBuffer; ++i)
-        //     {
-        //         p = (currentFrame + i) % trackLengthFrames;
-        //
-        //         outputBuffer[i * numOutputChannels + LEFT] +=
-        //           trackBuffer[p * TRACK_NUM_CHANNELS + LEFT];
-        //         outputBuffer[i * numOutputChannels + RIGHT] +=
-        //           trackBuffer[p * TRACK_NUM_CHANNELS + RIGHT];
-        //     }
-        // }
     }
 
 private:
-    const int trackIndex;
     // const int inputChannelLeft;
     // const int inputChannelRight;
 
+    const int trackIndex;
     TrackState trackState;
 
     frame_t trackLengthFrames;
+    int trackNumOfChannels;
+
     frame_t trackBufferSize;
     float * trackBuffer;
-
-    float frequency;
-    float phase;
-    float currentPhaseStep;
 };
 
 #endif // __TRACK_H__
