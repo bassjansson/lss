@@ -9,6 +9,8 @@
 
 #include "Defines.h"
 
+#define VOLUME_LOWPASS 0.1f
+
 using namespace std;
 
 enum TrackState
@@ -28,7 +30,9 @@ public:
         trackLengthFrames(0),
         trackNumOfChannels(0),
         trackBufferSize(0),
-        trackBuffer(NULL)
+        trackBuffer(NULL),
+        volume(0.0f),
+        volumeSet(0.0f)
     { }
 
     ~Track()
@@ -96,9 +100,9 @@ public:
         trackState = STOPPED;
     }
 
-    void setFrequency(float freq)
+    void setVolume(float value)
     {
-        // TODO
+        volumeSet = value;
     }
 
     void process(
@@ -117,18 +121,12 @@ public:
             {
                 p = (currentFrame + i) % trackLengthFrames;
 
+                volume = volume * (1.0f - VOLUME_LOWPASS) + volumeSet * VOLUME_LOWPASS;
+
                 outputBuffer[i * numOutputChannels + LEFT] +=
-                  trackBuffer[p * trackNumOfChannels + LEFT];
+                  trackBuffer[p * trackNumOfChannels + LEFT] * volume;
                 outputBuffer[i * numOutputChannels + RIGHT] +=
-                  trackBuffer[p * trackNumOfChannels + RIGHT];
-            }
-        }
-        else
-        {
-            for (frame_t i = 0; i < framesPerBuffer; ++i)
-            {
-                outputBuffer[i * numOutputChannels + LEFT]  = 0.0f;
-                outputBuffer[i * numOutputChannels + RIGHT] = 0.0f;
+                  trackBuffer[p * trackNumOfChannels + RIGHT] * volume;
             }
         }
     }
@@ -145,6 +143,9 @@ private:
 
     frame_t trackBufferSize;
     float * trackBuffer;
+
+    float volume;
+    float volumeSet;
 };
 
 #endif // __TRACK_H__
