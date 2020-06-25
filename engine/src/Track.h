@@ -22,7 +22,8 @@ enum TrackState
 class Track
 {
 public:
-    Track(int trackIndex, int inputChannelLeft, int inputChannelRight) :
+    Track(int trackIndex, int inputChannelLeft, int inputChannelRight,
+        float x, float y, float r) :
         // inputChannelLeft(inputChannelLeft),
         // inputChannelRight(inputChannelRight),
         trackIndex(trackIndex),
@@ -31,8 +32,8 @@ public:
         trackNumOfChannels(0),
         trackBufferSize(0),
         trackBuffer(NULL),
-        volume(0.0f),
-        volumeSet(0.0f)
+        volume(0.0f), volumeSet(0.0f),
+        xPos(x), yPos(y), radius(r)
     { }
 
     ~Track()
@@ -100,9 +101,17 @@ public:
         trackState = STOPPED;
     }
 
-    void setVolume(float value)
+    void updateVolumeByUserPosition(float x, float y)
     {
-        volumeSet = value;
+        float xDiff = xPos - x;
+        float yDiff = yPos - y;
+
+        float distance = (xDiff * xDiff + yDiff * yDiff) / radius;
+
+        if (distance > 1.0f)
+            distance = 1.0f;
+
+        volumeSet = cosf(distance * M_PI) * 0.5f + 0.5f;
     }
 
     void process(
@@ -144,8 +153,8 @@ private:
     frame_t trackBufferSize;
     float * trackBuffer;
 
-    float volume;
-    float volumeSet;
+    float volume, volumeSet;
+    const float xPos, yPos, radius;
 };
 
 #endif // __TRACK_H__
