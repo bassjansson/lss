@@ -25,15 +25,11 @@ public:
         // inputChannelRight(inputChannelRight),
         trackIndex(trackIndex),
         trackState(STOPPED),
-        trackLengthFrames(1),
-        trackNumOfChannels(2)
-    {
-        trackBufferSize = trackLengthFrames * trackNumOfChannels;
-        trackBuffer     = new float[trackBufferSize];
-
-        for (frame_t i = 0; i < trackBufferSize; ++i)
-            trackBuffer[i] = 0.0f;
-    }
+        trackLengthFrames(0),
+        trackNumOfChannels(0),
+        trackBufferSize(0),
+        trackBuffer(NULL)
+    { }
 
     ~Track()
     {
@@ -49,8 +45,12 @@ public:
     {
         trackState = STOPPED;
 
-        trackLengthFrames  = 1;
-        trackNumOfChannels = 2;
+        trackLengthFrames  = 0;
+        trackNumOfChannels = 0;
+        trackBufferSize    = 0;
+
+        if (trackBuffer)
+            delete[] trackBuffer;
 
 
         SNDFILE * audioFile;
@@ -109,7 +109,7 @@ public:
         int           numOutputChannels,
         frame_t       currentFrame)
     {
-        if (trackState == PLAYING)
+        if (trackState == PLAYING && trackLengthFrames > 0)
         {
             frame_t p;
 
@@ -121,6 +121,14 @@ public:
                   trackBuffer[p * trackNumOfChannels + LEFT];
                 outputBuffer[i * numOutputChannels + RIGHT] +=
                   trackBuffer[p * trackNumOfChannels + RIGHT];
+            }
+        }
+        else
+        {
+            for (frame_t i = 0; i < framesPerBuffer; ++i)
+            {
+                outputBuffer[i * numOutputChannels + LEFT]  = 0.0f;
+                outputBuffer[i * numOutputChannels + RIGHT] = 0.0f;
             }
         }
     }
