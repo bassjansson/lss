@@ -103,15 +103,17 @@ public:
 
     void updateVolumeByUserPosition(float x, float y)
     {
-        float xDiff = xPos - x;
-        float yDiff = yPos - y;
+        float dx = xPos - x;
+        float dy = yPos - y;
 
-        float distance = (xDiff * xDiff + yDiff * yDiff) / radius;
+        float c = sqrtf(dx * dx + dy * dy) / radius;
 
-        if (distance > 1.0f)
-            distance = 1.0f;
+        // Gaussian distribution
+        volumeSet = expf(-0.69f * c * c);
 
-        volumeSet = cosf(distance * M_PI) * 0.5f + 0.5f;
+        // Cosine distribution
+        // if (c > 1.0f) c = 1.0f;
+        // volumeSet = cosf(c * M_PI) * 0.5f + 0.5f;
     }
 
     void process(
