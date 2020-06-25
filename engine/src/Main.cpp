@@ -26,11 +26,20 @@ int main(int argc, const char * argv[])
     // cout << endl;
 
     Track ** tracks = new Track *[NUMBER_OF_TRACKS];
-    for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
-        tracks[i] = new Track(i, inputChannelLeft, inputChannelRight);
 
-    if (!tracks[0]->loadAudioFile("test.wav"))
-        return 1;
+    char fileName[16];
+
+    for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+    {
+        float x = i % 2 - 0.5f;
+        float y = i / 2 - 0.5f;
+        float r = 0.5f;
+
+        sprintf(fileName, "track%d.wav", i);
+
+        tracks[i] = new Track(i, inputChannelLeft, inputChannelRight, x, y, r);
+        tracks[i]->loadAudioFile(fileName);
+    }
 
     Audio audio(tracks);
     // Gpio gpio(tracks);
@@ -44,13 +53,28 @@ int main(int argc, const char * argv[])
     //     return 1;
     // }
 
+    float t = 0.0f;
+
     while (true)
-        usleep(1000000);
+    {
+        float x = cosf(t * 2.29f * 2.0f * M_PI);
+        float y = sinf(t * 2.59f * 2.0f * M_PI);
+
+        if (fmodf(t, 0.005f) < 0.0001f)
+            cout << "X: " << x << " , Y: " << y << endl;
+
+        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+            tracks[i]->updateVolumeByUserPosition(x, y);
+
+        usleep(10000L);
+
+        t = fmodf(t + 0.0001f, 1.0f);
+    }
 
     // gpio.close();
     audio.close();
 
-    usleep(2000000);
+    usleep(1000000L);
 
     return 0;
 } // main
