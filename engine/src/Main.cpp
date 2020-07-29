@@ -31,9 +31,9 @@ int main(int argc, const char * argv[])
 
     for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
     {
-        float x = 2.0f + i;
+        float x = 1.5f + i;
         float y = 4.0f;
-        float r = 0.5f;
+        float r = 0.35f;
 
         sprintf(fileName, "track%d.wav", i);
 

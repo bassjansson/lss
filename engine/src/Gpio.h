@@ -142,7 +142,7 @@ private:
          */
 
 
-        float pqf = xyzp[3] / 60.0f;
+        float pqf = xyzp[3] / 70.0f;
 
         if (pqf < 0.0f) pqf = 0.0f;
         if (pqf > 1.0f) pqf = 1.0f;
@@ -161,7 +161,7 @@ private:
 
     void readSerialData()
     {
-        if (serialDataAvail(fd) > 0)
+        while (serialDataAvail(fd) > 0)
         {
             int c = serialGetchar(fd);
 
