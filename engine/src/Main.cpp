@@ -4,7 +4,7 @@
 #include "Defines.h"
 #include "Track.h"
 #include "Audio.h"
-// #include "Gpio.h"
+#include "Gpio.h"
 
 using namespace std;
 
@@ -42,36 +42,21 @@ int main(int argc, const char * argv[])
     }
 
     Audio audio(tracks);
-    // Gpio gpio(tracks);
+    Gpio gpio(tracks);
 
     if (!audio.open(audioDeviceIndex))
         return 1;
 
-    // if (!gpio.setup())
-    // {
-    //     audio.close();
-    //     return 1;
-    // }
-
-    float t = 0.0f;
-
-    while (true)
+    if (!gpio.setup())
     {
-        float x = cosf(t * 2.29f * 2.0f * M_PI);
-        float y = sinf(t * 2.59f * 2.0f * M_PI);
-
-        if (fmodf(t, 0.005f) < 0.0001f)
-            cout << "X: " << x << " , Y: " << y << endl;
-
-        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
-            tracks[i]->updateVolumeByUserPosition(x, y);
-
-        usleep(10000L);
-
-        t = fmodf(t + 0.0001f, 1.0f);
+        audio.close();
+        return 1;
     }
 
-    // gpio.close();
+    while (true)
+        usleep(1000000L);
+
+    gpio.close();
     audio.close();
 
     usleep(1000000L);

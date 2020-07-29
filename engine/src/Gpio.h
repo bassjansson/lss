@@ -140,17 +140,17 @@ private:
          * pqf : bytes 12, 8-bit integer, position quality factor in percent
          */
 
-        // cout << "[Serial] Position: ";
-        //
-        // for (int i = 0; i < XYZP_SIZE; ++i)
-        //     cout << xyzp[i] << ", ";
-        //
-        // cout << endl;
 
-        // for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+        cout << "[Serial] Position: ";
 
-        tracks[0]->setFrequency(xyzp[0] / 8.5f * 300.0f + 200.0f);
-        tracks[1]->setFrequency(xyzp[1] / 4.5f * 300.0f + 500.0f);
+        for (int i = 0; i < XYZP_SIZE; ++i)
+            cout << xyzp[i] << ", ";
+
+        cout << endl;
+
+
+        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+            tracks[i]->updateVolumeByUserPosition(xyzp[0] / 1000.0f, xyzp[1] / 1000.0f);
     }
 
     void readSerialData()
