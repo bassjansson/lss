@@ -104,8 +104,8 @@ public:
 
     void updateVolumeByUserPosition(float x, float y)
     {
-        float dx = xPos - x;
-        float dy = yPos - y;
+        float dx = x - xPos;
+        float dy = y - yPos;
 
         float c = sqrtf(dx * dx + dy * dy) / radius;
 

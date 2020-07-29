@@ -142,7 +142,7 @@ private:
          */
 
 
-        float pqf = xyzp[3] / 100.0f;
+        float pqf = xyzp[3] / 60.0f;
 
         if (pqf < 0.0f) pqf = 0.0f;
         if (pqf > 1.0f) pqf = 1.0f;
