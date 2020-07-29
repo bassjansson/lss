@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 #include <stdint.h>
 
@@ -236,13 +237,13 @@ private:
     {
         readSerialData();
 
-        readSensorValues(i2cFile, 0x3B, i2cBuffer, I2C_BUFFER_SIZE);
-
-        float z    = bytePairToInt(i2cBuffer + 4) / 16384.0f;
-        float freq = z * 100.0f + 350.0f;
-
-        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
-            tracks[i]->setFrequency(freq);
+        // readSensorValues(i2cFile, 0x3B, i2cBuffer, I2C_BUFFER_SIZE);
+        //
+        // float z    = bytePairToInt(i2cBuffer + 4) / 16384.0f;
+        // float freq = z * 100.0f + 350.0f;
+        //
+        // for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+        //     tracks[i]->setFrequency(freq);
     }
 
     static void ptCallback(PtTimestamp timeStamp, void * userData)
