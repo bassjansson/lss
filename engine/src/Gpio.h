@@ -31,7 +31,8 @@ public:
     Gpio(Track ** tracks) :
         fd(-1),
         str(""),
-        tracks(tracks)
+        tracks(tracks),
+        userX(0.0f), userY(0.0f)
     {
         for (int i = 0; i < XYZP_SIZE; ++i)
             xyzp[i] = 0.0f;
@@ -134,23 +135,28 @@ private:
     {
         /*
          * position = x, y, z, pqf : bytes 0-12, position coordinates and quality factor
-         * x : bytes 0-3, 32-bit integer, in millimeters
-         * y : bytes 4-7, 32-bit integer, in millimeters
-         * z : bytes 8-11, 32-bit integer, in millimeters
+         * x : bytes 0-3, 32-bit integer, in meters
+         * y : bytes 4-7, 32-bit integer, in meters
+         * z : bytes 8-11, 32-bit integer, in meters
          * pqf : bytes 12, 8-bit integer, position quality factor in percent
          */
 
 
-        cout << "[Serial] Position: ";
+        float pqf = xyzp[3] / 100.0f;
 
-        for (int i = 0; i < XYZP_SIZE; ++i)
-            cout << xyzp[i] << ", ";
+        if (pqf < 0.0f) pqf = 0.0f;
+        if (pqf > 1.0f) pqf = 1.0f;
 
-        cout << endl;
+        float pqfInv = 1.0f - pqf;
+
+        userX = userX * pqfInv + xyzp[0] * pqf;
+        userY = userY * pqfInv + xyzp[1] * pqf;
+
+        cout << "[Gpio] User Position: " << userX << "m, " << userY << "m" << endl;
 
 
         for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
-            tracks[i]->updateVolumeByUserPosition(xyzp[0] / 1000.0f, xyzp[1] / 1000.0f);
+            tracks[i]->updateVolumeByUserPosition(userX, userY);
     }
 
     void readSerialData()
@@ -254,6 +260,7 @@ private:
     int fd;
     string str;
     float xyzp[XYZP_SIZE];
+    float userX, userY;
 
     // I2C
     int i2cFile;
