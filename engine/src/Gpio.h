@@ -31,8 +31,8 @@ public:
     Gpio(Track ** tracks) :
         fd(-1),
         str(""),
+        userX(0.0f), userY(0.0f),
         tracks(tracks),
-        userX(0.0f), userY(0.0f)
     {
         for (int i = 0; i < XYZP_SIZE; ++i)
             xyzp[i] = 0.0f;
@@ -152,7 +152,7 @@ private:
         userX = userX * pqfInv + xyzp[0] * pqf;
         userY = userY * pqfInv + xyzp[1] * pqf;
 
-        cout << "[Gpio] User Position: " << userX << "m, " << userY << "m" << endl;
+        //cout << "[Gpio] User Position: " << userX << "m, " << userY << "m" << endl;
 
 
         for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
@@ -187,6 +187,10 @@ private:
                             }
 
                             onReceivedPosition();
+                        }
+                        else
+                        {
+                            cout << "[Gpio] Received serial message: " << str << endl;
                         }
                     }
 
