@@ -32,7 +32,7 @@ public:
         fd(-1),
         str(""),
         userX(0.0f), userY(0.0f),
-        tracks(tracks),
+        tracks(tracks)
     {
         for (int i = 0; i < XYZP_SIZE; ++i)
             xyzp[i] = 0.0f;
