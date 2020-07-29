@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <string>
+#include <cstring>
 #include <sndfile.h>
 // #include <fftw3.h>
 
