@@ -38,7 +38,6 @@ int main(int argc, const char * argv[])
         sprintf(fileName, "track%d.wav", i);
 
         tracks[i] = new Track(i, inputChannelLeft, inputChannelRight, x, y, r, fileName);
-        tracks[i]->loadAudioFromFile();
         tracks[i]->startPlayback();
     }
 

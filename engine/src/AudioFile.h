@@ -14,7 +14,7 @@ class AudioFile
 {
 public:
     AudioFile(const char * filePath) :
-        readPointer(0), writePointer(1)
+        readPointer(0), writePointer(0)
     {
         // Open sound file
 
@@ -73,11 +73,9 @@ public:
 
     float * getNextBufferToProcess()
     {
-        float * buf = circularBuffer[readPointer];
-
         readPointer = (readPointer + 1) % AUDIO_NUM_OF_BUFS;
 
-        return buf;
+        return circularBuffer[readPointer];
     }
 
     int getNumOfChannels()
