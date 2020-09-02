@@ -12,6 +12,7 @@
 
 #define AUDIO_SAMPLE_RATE   44100 // Hz
 #define AUDIO_BUFFER_SIZE   1024  // frames
+#define AUDIO_NUM_OF_BUFS   10
 #define AUDIO_CHANNELS_IN   0
 #define AUDIO_CHANNELS_OUT  2
 

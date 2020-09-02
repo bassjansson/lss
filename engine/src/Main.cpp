@@ -31,14 +31,14 @@ int main(int argc, const char * argv[])
 
     for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
     {
-        float x = 1.5f + i;
-        float y = 4.0f;
+        float x = i;
+        float y = 0.0f;
         float r = 0.35f;
 
         sprintf(fileName, "track%d.wav", i);
 
-        tracks[i] = new Track(i, inputChannelLeft, inputChannelRight, x, y, r);
-        tracks[i]->loadAudioFile(fileName);
+        tracks[i] = new Track(i, inputChannelLeft, inputChannelRight, x, y, r, fileName);
+        tracks[i]->startPlayback();
     }
 
     Audio audio(tracks);
@@ -54,7 +54,12 @@ int main(int argc, const char * argv[])
     }
 
     while (true)
-        usleep(1000000L);
+    {
+        for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
+            tracks[i]->loadAudioFromFile();
+
+        usleep(10000L);
+    }
 
     gpio.close();
     audio.close();
