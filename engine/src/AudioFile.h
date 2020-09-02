@@ -25,8 +25,6 @@ public:
             cout << "[AudioFile] Failed to open audio file: " << sf_strerror(NULL) << endl;
 
             soundFileInfo.channels = 1;
-
-            return false;
         }
 
 
