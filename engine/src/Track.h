@@ -8,7 +8,7 @@
 #include "Defines.h"
 #include "AudioFile.h"
 
-#define VOLUME_LOWPASS   0.1f
+#define VOLUME_LOWPASS   0.2f
 #define VOLUME_THRESHOLD 0.0001f // -80dB
 
 using namespace std;

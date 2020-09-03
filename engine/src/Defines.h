@@ -11,13 +11,13 @@
 #define SERIAL_BAUD_RATE    115200
 
 #define AUDIO_SAMPLE_RATE   44100 // Hz
-#define AUDIO_BUFFER_SIZE   1024  // frames
+#define AUDIO_BUFFER_SIZE   2048  // frames
 #define AUDIO_NUM_OF_BUFS   64    // buffers in memory per track
 #define AUDIO_CHANNELS_IN   0
 #define AUDIO_CHANNELS_OUT  2
 
-#define NUMBER_OF_TRACKS    4
-#define TRACK_VOLUME_RADIUS 0.35f
+#define NUMBER_OF_TRACKS    16
+#define TRACK_VOLUME_RADIUS 1.0f
 
 #define LEFT                0
 #define RIGHT               1

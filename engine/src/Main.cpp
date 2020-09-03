@@ -27,21 +27,24 @@ int main(int argc, const char * argv[])
 
     Track ** tracks = new Track *[NUMBER_OF_TRACKS];
 
-    char fileName[16];
+    char fileName[32];
 
     float xPositions[NUMBER_OF_TRACKS] = { 0.5f, 1.5f, 0.5f, 1.5f };
     float yPositions[NUMBER_OF_TRACKS] = { 0.5f, 0.5f, 1.5f, 1.5f };
 
     for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
     {
+        float theta = (float)i / NUMBER_OF_TRACKS * 2.0f * M_PI;
+        float alpha = 2.0f;
+
         TrackData data;
 
         data.index  = i;
-        data.xPos   = xPositions[i];
-        data.yPos   = yPositions[i];
+        data.xPos   = cosf(theta) * alpha; // xPositions[i];
+        data.yPos   = sinf(theta) * alpha; // yPositions[i];
         data.radius = TRACK_VOLUME_RADIUS;
 
-        sprintf(fileName, "track%d.wav", i);
+        sprintf(fileName, "audio/track_%d.wav", i);
 
         tracks[i] = new Track(data, fileName);
         tracks[i]->startPlayback();
