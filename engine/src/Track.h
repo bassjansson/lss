@@ -19,17 +19,22 @@ enum TrackState
     PLAYING
 };
 
+struct TrackData
+{
+    int   index;
+    float xPos;
+    float yPos;
+    float radius;
+};
+
 class Track
 {
 public:
-    Track(int trackIndex, int inputChannelLeft, int inputChannelRight,
-      float x, float y, float r, const char * audioFilePath) :
-        // inputChannelLeft(inputChannelLeft),
-        // inputChannelRight(inputChannelRight),
-        trackIndex(trackIndex),
+    Track(TrackData& trackData, const char * audioFilePath) :
+        trackData(trackData),
         trackState(STOPPED),
-        volume(0.0f), volumeSet(0.0f),
-        xPos(x), yPos(y), radius(r),
+        volume(0.0f),
+        volumeSet(0.0f),
         audioFile(audioFilePath)
     { }
 
@@ -38,7 +43,7 @@ public:
 
     int getTrackIndex()
     {
-        return trackIndex;
+        return trackData.index;
     }
 
     void startPlayback()
@@ -53,10 +58,10 @@ public:
 
     void updateVolumeByUserPosition(float x, float y)
     {
-        float dx = x - xPos;
-        float dy = y - yPos;
+        float dx = x - trackData.xPos;
+        float dy = y - trackData.yPos;
 
-        float c = sqrtf(dx * dx + dy * dy) / radius;
+        float c = sqrtf(dx * dx + dy * dy) / trackData.radius;
 
         // Gaussian distribution
         volumeSet = expf(-0.69f * c * c);
@@ -111,14 +116,11 @@ public:
     }
 
 private:
-    // const int inputChannelLeft;
-    // const int inputChannelRight;
-
-    const int trackIndex;
+    TrackData trackData;
     TrackState trackState;
 
-    float volume, volumeSet;
-    const float xPos, yPos, radius;
+    float volume;
+    float volumeSet;
 
     AudioFile audioFile;
 };

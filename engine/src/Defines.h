@@ -17,6 +17,7 @@
 #define AUDIO_CHANNELS_OUT  2
 
 #define NUMBER_OF_TRACKS    4
+#define TRACK_VOLUME_RADIUS 0.35f
 
 #define LEFT                0
 #define RIGHT               1

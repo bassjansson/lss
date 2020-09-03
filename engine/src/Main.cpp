@@ -29,15 +29,21 @@ int main(int argc, const char * argv[])
 
     char fileName[16];
 
+    float xPositions[NUMBER_OF_TRACKS] = { 0.5f, 1.5f, 0.5f, 1.5f };
+    float yPositions[NUMBER_OF_TRACKS] = { 0.5f, 0.5f, 1.5f, 1.5f };
+
     for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
     {
-        float x = i;
-        float y = 0.0f;
-        float r = 0.35f;
+        TrackData data;
+
+        data.index  = i;
+        data.xPos   = xPositions[i];
+        data.yPos   = yPositions[i];
+        data.radius = TRACK_VOLUME_RADIUS;
 
         sprintf(fileName, "track%d.wav", i);
 
-        tracks[i] = new Track(i, inputChannelLeft, inputChannelRight, x, y, r, fileName);
+        tracks[i] = new Track(data, fileName);
         tracks[i]->startPlayback();
     }
 
