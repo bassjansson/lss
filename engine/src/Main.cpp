@@ -58,7 +58,7 @@ int main(int argc, const char * argv[])
         for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
             tracks[i]->loadAudioFromFile();
 
-        usleep(1000L);
+        usleep(10000L); // 10ms
     }
 
     gpio.close();
