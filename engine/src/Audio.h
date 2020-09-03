@@ -79,13 +79,13 @@ public:
         PaSampleFormat sampleFormat = paFloat32;
         PaTime lowLatency = deviceInfo->defaultLowOutputLatency;
 
-        PaStreamParameters inputParameters;
-
-        inputParameters.device           = deviceIndex;
-        inputParameters.channelCount     = numInputChannels;
-        inputParameters.sampleFormat     = sampleFormat;
-        inputParameters.suggestedLatency = lowLatency;
-        inputParameters.hostApiSpecificStreamInfo = NULL;
+        // PaStreamParameters inputParameters;
+        //
+        // inputParameters.device           = deviceIndex;
+        // inputParameters.channelCount     = numInputChannels;
+        // inputParameters.sampleFormat     = sampleFormat;
+        // inputParameters.suggestedLatency = lowLatency;
+        // inputParameters.hostApiSpecificStreamInfo = NULL;
 
         PaStreamParameters outputParameters;
 

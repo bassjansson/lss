@@ -14,8 +14,8 @@ int main(int argc, const char * argv[])
     cout << "engine <audio-dev>" << endl;
     cout << endl;
 
-    int inputChannelLeft  = 0;
-    int inputChannelRight = 1;
+    // int inputChannelLeft  = 0;
+    // int inputChannelRight = 1;
 
     int audioDeviceIndex = -1;
 
