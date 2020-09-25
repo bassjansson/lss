@@ -42,9 +42,9 @@ int main(int argc, const char * argv[])
         data.y = yPositions[i];
         data.w = 1.0f;
         data.h = 1.0f;
-        data.r = TRACK_VOLUME_RADIUS;
+        data.r = 0.3f;
 
-        data.volumeLowpass   = 0.7f; // 0 - 1
+        data.volumeLowpass   = 0.7f;    // 0 - 1
         data.volumeThreshold = 0.0001f; // -80dB
 
         sprintf(fileName, "audio/ss/track_%d.wav", i);
