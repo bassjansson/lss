@@ -93,7 +93,7 @@ public:
             int trackRight = trackNumOfChannels > 1;
 
             float v1 = trackData.volumeLowpass;
-            float v2 = 1.0f - v2;
+            float v2 = 1.0f - v1;
 
             for (frame_t i = 0; i < framesPerBuffer; ++i)
             {
