@@ -32,40 +32,14 @@ int main(int argc, const char * argv[])
     float xPositions[NUMBER_OF_TRACKS] = { 0.5f, 1.5f, 0.5f, 1.5f };
     float yPositions[NUMBER_OF_TRACKS] = { 0.5f, 0.5f, 1.5f, 1.5f };
 
-    float s1 = 1.0f;
-    float s2 = 0.8f;
-    float s3 = 0.4f;
-
     for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
     {
-        float x, y, r;
-
-        if (i < 4)
-        {
-            x = (i - 0) * s1 + s1 / 2 - s1 * 2;
-            y = s1 / 2;
-            r = s1;
-        }
-        else
-        if (i < 8)
-        {
-            x = (i - 4) * s2 + s2 / 2 - s2 * 2;
-            y = s1 + s2 / 2;
-            r = s2;
-        }
-        else
-        {
-            x = (i - 8) * s3 + s3 / 2 - s3 * 4;
-            y = s1 + s2 + s3 / 2;
-            r = s3;
-        }
-
         TrackData data;
 
         data.index  = i;
-        data.xPos   = x + 5.6f; // xPositions[i];
-        data.yPos   = y;        // yPositions[i];
-        data.radius = r * TRACK_VOLUME_RADIUS;
+        data.xPos   = xPositions[i];
+        data.yPos   = yPositions[i];
+        data.radius = TRACK_VOLUME_RADIUS;
 
         sprintf(fileName, "audio/ss/track_%d.wav", i);
 
