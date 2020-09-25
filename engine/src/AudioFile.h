@@ -22,7 +22,7 @@ public:
 
         if (!(soundFile = sf_open(filePath, SFM_READ, &soundFileInfo)))
         {
-            cout << "[AudioFile] Failed to open audio file: " << sf_strerror(NULL) << endl;
+            cout << "[AudioFile] Failed to open audio file \"" << filePath << "\" - " << sf_strerror(NULL) << endl;
 
             soundFileInfo.channels = 1;
         }

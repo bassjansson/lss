@@ -1,0 +1,35 @@
+trackradius	0.3
+volumelowpass	0.7
+volumethreshold	0.0001
+	
+audiofilepath	x	y	w	h
+audio/zz/01.wav	0.0	0.0	1.0	1.0
+audio/zz/02.wav	0.0	0.0	1.0	1.0
+audio/zz/03.wav	0.0	0.0	1.0	1.0
+audio/zz/04.wav	0.0	0.0	1.0	1.0
+audio/zz/05.wav	0.0	0.0	1.0	1.0
+audio/zz/06.wav	0.0	0.0	1.0	1.0
+audio/zz/07.wav	0.0	0.0	1.0	1.0
+audio/zz/08.wav	0.0	0.0	1.0	1.0
+audio/zz/09.wav	0.0	0.0	1.0	1.0
+audio/zz/10.wav	0.0	0.0	1.0	1.0
+audio/zz/11.wav	0.0	0.0	1.0	1.0
+audio/zz/12.wav	0.0	0.0	1.0	1.0
+audio/zz/13.wav	0.0	0.0	1.0	1.0
+audio/zz/14.wav	0.0	0.0	1.0	1.0
+audio/zz/15.wav	0.0	0.0	1.0	1.0
+audio/zz/16.wav	0.0	0.0	1.0	1.0
+audio/zz/17.wav	0.0	0.0	1.0	1.0
+audio/zz/18.wav	0.0	0.0	1.0	1.0
+audio/zz/19.wav	0.0	0.0	1.0	1.0
+audio/zz/20.wav	0.0	0.0	1.0	1.0
+audio/zz/21.wav	0.0	0.0	1.0	1.0
+audio/zz/22.wav	0.0	0.0	1.0	1.0
+audio/zz/23.wav	0.0	0.0	1.0	1.0
+audio/zz/24.wav	0.0	0.0	1.0	1.0
+audio/zz/25.wav	0.0	0.0	1.0	1.0
+audio/zz/26.wav	0.0	0.0	1.0	1.0
+audio/zz/27.wav	0.0	0.0	1.0	1.0
+audio/zz/28.wav	0.0	0.0	1.0	1.0
+audio/zz/29.wav	0.0	0.0	1.0	1.0
+audio/zz/30.wav	0.0	0.0	1.0	1.0

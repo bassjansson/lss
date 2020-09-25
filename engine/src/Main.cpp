@@ -1,5 +1,7 @@
 #include <iostream>
 #include <unistd.h>
+#include <fstream>
+#include <string>
 
 #include "Defines.h"
 #include "Track.h"
@@ -7,6 +9,15 @@
 #include "Gpio.h"
 
 using namespace std;
+
+int configFileReadError(const char * errorText, int i = 0)
+{
+    cout << "[Main] Config file read error!" << endl;
+    cout << "\tError at: " << errorText << " " << i << endl;
+    cout << "\tExiting program." << endl;
+
+    return 1;
+}
 
 int main(int argc, const char * argv[])
 {
@@ -25,31 +36,44 @@ int main(int argc, const char * argv[])
     // cout << ") and right (" << inputChannelRight + 1 << ")" << endl;
     // cout << endl;
 
+    ifstream config("config.txt");
+
+    string label;
+    float trackRadius;
+    float volumeLowpass;
+    float volumeThreshold;
+
+    if (!(config >> label >> trackRadius)) return configFileReadError("trackRadius");
+
+    if (!(config >> label >> volumeLowpass)) return configFileReadError("volumeLowpass");
+
+    if (!(config >> label >> volumeThreshold)) return configFileReadError("volumeThreshold");
+
+    if (!(config >> label >> label >> label >> label >> label)) return configFileReadError("track labels");
+
+    string filePath;
+    float x, y, w, h;
+
     Track ** tracks = new Track *[NUMBER_OF_TRACKS];
-
-    char fileName[32];
-
-    float xPositions[NUMBER_OF_TRACKS] = { 0.5f, 1.5f, 0.5f, 1.5f };
-    float yPositions[NUMBER_OF_TRACKS] = { 0.5f, 0.5f, 1.5f, 1.5f };
 
     for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
     {
+        if (!(config >> filePath >> x >> y >> w >> h)) return configFileReadError("track", i + 1);
+
         TrackData data;
 
         data.index = i;
 
-        data.x = xPositions[i];
-        data.y = yPositions[i];
-        data.w = 1.0f;
-        data.h = 1.0f;
-        data.r = 0.3f;
+        data.x = x;
+        data.y = y;
+        data.w = w;
+        data.h = h;
+        data.r = trackRadius;
 
-        data.volumeLowpass   = 0.7f;    // 0 - 1
-        data.volumeThreshold = 0.0001f; // -80dB
+        data.volumeLowpass   = volumeLowpass;
+        data.volumeThreshold = volumeThreshold;
 
-        sprintf(fileName, "audio/ss/track_%d.wav", i);
-
-        tracks[i] = new Track(data, fileName);
+        tracks[i] = new Track(data, filePath.c_str());
         tracks[i]->startPlayback();
     }
 
