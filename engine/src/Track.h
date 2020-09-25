@@ -21,10 +21,8 @@ enum TrackState
 
 struct TrackData
 {
-    int   index;
-    float xPos;
-    float yPos;
-    float radius;
+    int   i;
+    float x, y, w, h, r;
 };
 
 class Track
@@ -43,7 +41,7 @@ public:
 
     int getTrackIndex()
     {
-        return trackData.index;
+        return trackData.i;
     }
 
     void startPlayback()
@@ -58,13 +56,13 @@ public:
 
     void updateVolumeByUserPosition(float x, float y)
     {
-        float dx = x - trackData.xPos;
-        float dy = y - trackData.yPos;
+        float dx = (trackData.x - x) / trackData.w * 2.0f + 1.0f;
+        float dy = (trackData.y - y) / trackData.h * 2.0f + 1.0f;
 
-        float c = sqrtf(dx * dx + dy * dy) / trackData.radius;
+        float c = sqrtf(dx * dx + dy * dy) / trackData.r;
 
         // Gaussian distribution
-        volumeSet = expf(-0.69f * c * c);
+        volumeSet = expf(-0.69f * c * c); // Need the square?
 
         // Cosine distribution
         // if (c > 1.0f) c = 1.0f;

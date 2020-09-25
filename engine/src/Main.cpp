@@ -36,10 +36,12 @@ int main(int argc, const char * argv[])
     {
         TrackData data;
 
-        data.index  = i;
-        data.xPos   = xPositions[i];
-        data.yPos   = yPositions[i];
-        data.radius = TRACK_VOLUME_RADIUS;
+        data.i = i;
+        data.x = xPositions[i];
+        data.y = yPositions[i];
+        data.w = 1.0f;
+        data.h = 1.0f;
+        data.r = TRACK_VOLUME_RADIUS;
 
         sprintf(fileName, "audio/ss/track_%d.wav", i);
 
