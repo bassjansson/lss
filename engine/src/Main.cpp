@@ -36,12 +36,16 @@ int main(int argc, const char * argv[])
     {
         TrackData data;
 
-        data.i = i;
+        data.index = i;
+
         data.x = xPositions[i];
         data.y = yPositions[i];
         data.w = 1.0f;
         data.h = 1.0f;
         data.r = TRACK_VOLUME_RADIUS;
+
+        data.volumeLowpass   = 0.7f; // 0 - 1
+        data.volumeThreshold = 0.0001f; // -80dB
 
         sprintf(fileName, "audio/ss/track_%d.wav", i);
 

@@ -8,9 +8,6 @@
 #include "Defines.h"
 #include "AudioFile.h"
 
-#define VOLUME_LOWPASS   0.2f
-#define VOLUME_THRESHOLD 0.0001f // -80dB
-
 using namespace std;
 
 enum TrackState
@@ -21,8 +18,10 @@ enum TrackState
 
 struct TrackData
 {
-    int   i;
+    int   index;
     float x, y, w, h, r;
+    float volumeLowpass;
+    float volumeThreshold;
 };
 
 class Track
@@ -41,7 +40,7 @@ public:
 
     int getTrackIndex()
     {
-        return trackData.i;
+        return trackData.index;
     }
 
     void startPlayback()
@@ -85,7 +84,7 @@ public:
         if (trackState == STOPPED)
             return;
 
-        if (volume >= VOLUME_THRESHOLD)
+        if (volume >= trackData.volumeThreshold)
         {
             float * trackBuffer    = audioFile.getNextBufferToProcess();
             int trackNumOfChannels = audioFile.getNumOfChannels();
@@ -93,9 +92,12 @@ public:
             int outRight   = numOutputChannels > 1;
             int trackRight = trackNumOfChannels > 1;
 
+            float v1 = trackData.volumeLowpass;
+            float v2 = 1.0f - v2;
+
             for (frame_t i = 0; i < framesPerBuffer; ++i)
             {
-                volume = volume * (1.0f - VOLUME_LOWPASS) + volumeSet * VOLUME_LOWPASS;
+                volume = volume * v1 + volumeSet * v2;
 
                 // Left channel
                 outputBuffer[i * numOutputChannels] +=
@@ -108,10 +110,10 @@ public:
         }
         else
         {
-            if (volumeSet >= VOLUME_THRESHOLD)
-                volume = VOLUME_THRESHOLD;
+            if (volumeSet >= trackData.volumeThreshold)
+                volume = trackData.volumeThreshold;
         }
-    }
+    } // process
 
 private:
     TrackData trackData;
