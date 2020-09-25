@@ -14,7 +14,7 @@ class AudioFile
 {
 public:
     AudioFile(const char * filePath) :
-        readPointer(0), writePointer(0)
+        readPointer(0), writePointer(1)
     {
         // Open sound file
 
@@ -41,6 +41,11 @@ public:
             for (int i = 0; i < bufferSize; ++i)
                 circularBuffer[b][i] = 0.0f;
         }
+
+
+        // Pre-load buffers from file
+
+        loadBuffersFromFile();
     }
 
     ~AudioFile()
