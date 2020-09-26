@@ -14,4 +14,4 @@ echo
 cd ..
 
 # run program
-./engine $1
+./engine $1 $2
