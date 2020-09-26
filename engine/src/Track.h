@@ -22,6 +22,7 @@ struct TrackData
     float x, y, w, h, r;
     float volumeLowpass;
     float volumeThreshold;
+    float volumeOutput;
 };
 
 class Track
@@ -101,11 +102,11 @@ public:
 
                 // Left channel
                 outputBuffer[i * numOutputChannels] +=
-                  trackBuffer[i * trackNumOfChannels] * volume;
+                  trackBuffer[i * trackNumOfChannels] * volume * trackData.volumeOutput;
 
                 // Right channel
                 outputBuffer[i * numOutputChannels + outRight] +=
-                  trackBuffer[i * trackNumOfChannels + trackRight] * volume;
+                  trackBuffer[i * trackNumOfChannels + trackRight] * volume * trackData.volumeOutput;
             }
         }
         else

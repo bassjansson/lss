@@ -44,12 +44,15 @@ int main(int argc, const char * argv[])
     float trackRadius;
     float volumeLowpass;
     float volumeThreshold;
+    float volumeOutput;
 
     if (!(config >> label >> trackRadius)) return configFileReadError("trackRadius");
 
     if (!(config >> label >> volumeLowpass)) return configFileReadError("volumeLowpass");
 
     if (!(config >> label >> volumeThreshold)) return configFileReadError("volumeThreshold");
+
+    if (!(config >> label >> volumeOutput)) return configFileReadError("volumeOutput");
 
     if (!(config >> label >> label >> label >> label >> label)) return configFileReadError("track labels");
 
@@ -74,6 +77,7 @@ int main(int argc, const char * argv[])
 
         data.volumeLowpass   = volumeLowpass;
         data.volumeThreshold = volumeThreshold;
+        data.volumeOutput    = volumeOutput;
 
         tracks[i] = new Track(data, filePath.c_str());
         tracks[i]->startPlayback();

@@ -1,6 +1,7 @@
 trackradius	0.3
 volumelowpass	0.7
 volumethreshold	0.0001
+volumeOutput	0.5
 	
 audiofilepath	x	y	w	h
 audio/zz/01.wav	0.0	3.7	2.3	1.3
