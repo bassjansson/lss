@@ -22,15 +22,17 @@ int configFileReadError(const char * errorText, int i = 0)
 int main(int argc, const char * argv[])
 {
     cout << "[Main] Usage:" << endl;
-    cout << "engine <audio-dev>" << endl;
+    cout << "engine <audio-dev> <send-lep>" << endl;
     cout << endl;
 
     // int inputChannelLeft  = 0;
     // int inputChannelRight = 1;
 
     int audioDeviceIndex = -1;
+    bool sendLepToSensor = false;
 
     if (argc > 1) audioDeviceIndex = atoi(argv[1]);
+    if (argc > 2) sendLepToSensor = atoi(argv[2]) > 0;
 
     // cout << "[Main] Selected audio input channel left (" << inputChannelLeft + 1;
     // cout << ") and right (" << inputChannelRight + 1 << ")" << endl;
@@ -83,7 +85,7 @@ int main(int argc, const char * argv[])
     if (!audio.open(audioDeviceIndex))
         return 1;
 
-    if (!gpio.setup())
+    if (!gpio.setup(sendLepToSensor))
     {
         audio.close();
         return 1;

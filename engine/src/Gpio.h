@@ -41,7 +41,7 @@ public:
     ~Gpio()
     { }
 
-    bool setup()
+    bool setup(bool sendCommand)
     {
         // ===== Setup serial port ===== //
 
@@ -57,21 +57,26 @@ public:
 
         cout << "[Gpio] Serial port opened!" << endl;
 
-        string cmd = "lep";
-
-        cout << "[Gpio] Sending command: " << cmd << endl;
-
         serialFlush(fd);
         delay(1000);
 
         serialPuts(fd, "\r\r");
         delay(1000);
 
-        serialPuts(fd, cmd.c_str());
-        serialPutchar(fd, '\r');
-        delay(1000);
+        if (sendCommand)
+        {
+            string cmd = "lep";
 
-        cout << "[Gpio] Command send. Listening to device..." << endl;
+            cout << "[Gpio] Sending command: " << cmd << endl;
+
+            serialPuts(fd, cmd.c_str());
+            serialPutchar(fd, '\r');
+            delay(1000);
+
+            cout << "[Gpio] Command send." << endl;
+        }
+
+        cout << "[Gpio] Listening to device..." << endl;
 
 
         // ===== Setup I2C ===== //
@@ -152,7 +157,7 @@ private:
         userX = userX * pqfInv + xyzp[0] * pqf;
         userY = userY * pqfInv + xyzp[1] * pqf;
 
-        //cout << "[Gpio] User Position: " << userX << "m, " << userY << "m" << endl;
+        // cout << "[Gpio] User Position: " << userX << "m, " << userY << "m" << endl;
 
 
         for (int i = 0; i < NUMBER_OF_TRACKS; ++i)
