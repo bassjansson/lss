@@ -70,7 +70,12 @@ public:
             sf_count_t framesRead = sf_readf_float(soundFile, circularBuffer[writePointer], AUDIO_BUFFER_SIZE);
 
             if (framesRead != AUDIO_BUFFER_SIZE)
+            {
                 sf_seek(soundFile, 0, SEEK_SET);
+                sf_readf_float(soundFile,
+                    circularBuffer[writePointer] + framesRead * soundFileInfo.channels,
+                    AUDIO_BUFFER_SIZE - framesRead);
+            }
 
             writePointer = (writePointer + 1) % AUDIO_NUM_OF_BUFS;
         }
