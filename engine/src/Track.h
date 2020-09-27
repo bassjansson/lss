@@ -34,6 +34,7 @@ public:
         trackState(STOPPED),
         volume(0.0f),
         volumeSet(0.0f),
+        distance(0.0f),
         audioFile(audioFilePath)
     { }
 
@@ -63,7 +64,9 @@ public:
         if (dx < 0.0f) dx = 0.0f;
         if (dy < 0.0f) dy = 0.0f;
 
-        float c = sqrtf(dx * dx + dy * dy) / trackData.volumeRadius;
+        distance = sqrtf(dx * dx + dy * dy);
+
+        float c = distance / trackData.volumeRadius;
 
         // Gaussian distribution
         volumeSet = expf(-0.69f * c * c);
@@ -89,7 +92,7 @@ public:
         if (trackState == STOPPED)
             return;
 
-        if (volume >= trackData.volumeThreshold)
+        if (distance < trackData.volumeThreshold)
         {
             float * trackBuffer    = audioFile.getNextBufferToProcess();
             int trackNumOfChannels = audioFile.getNumOfChannels();
@@ -115,8 +118,9 @@ public:
         }
         else
         {
-            if (volumeSet >= trackData.volumeThreshold)
-                volume = trackData.volumeThreshold;
+            // if (volumeSet >= trackData.volumeThreshold)
+            //     volume = trackData.volumeThreshold;
+            volume = 0.0f;
         }
     } // process
 
@@ -126,6 +130,7 @@ private:
 
     float volume;
     float volumeSet;
+    float distance;
 
     AudioFile audioFile;
 };

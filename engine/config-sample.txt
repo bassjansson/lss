@@ -1,7 +1,7 @@
 trackRadius	0.4
-volumeRadius	0.3
-volumeLowpass	0.7
-volumeThreshold	0.0001
+volumeRadius	0.33
+volumeLowpass	0.92
+volumeThreshold	2.5
 volumeOutput	0.2
 	
 audioFilePath	x	y	w	h
