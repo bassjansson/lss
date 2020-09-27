@@ -42,11 +42,14 @@ int main(int argc, const char * argv[])
 
     string label;
     float trackRadius;
+    float volumeRadius;
     float volumeLowpass;
     float volumeThreshold;
     float volumeOutput;
 
     if (!(config >> label >> trackRadius)) return configFileReadError("trackRadius");
+
+    if (!(config >> label >> volumeRadius)) return configFileReadError("volumeRadius");
 
     if (!(config >> label >> volumeLowpass)) return configFileReadError("volumeLowpass");
 
@@ -69,12 +72,12 @@ int main(int argc, const char * argv[])
 
         data.index = i;
 
-        data.x = x;
-        data.y = y;
-        data.w = w;
-        data.h = h;
-        data.r = trackRadius;
+        data.x = x + w / 2.0f;           // Center of track
+        data.y = y + h / 2.0f;           // Center of track
+        data.w = w / 2.0f - trackRadius; // Radius of track
+        data.h = h / 2.0f - trackRadius; // Radius of track
 
+        data.volumeRadius    = volumeRadius;
         data.volumeLowpass   = volumeLowpass;
         data.volumeThreshold = volumeThreshold;
         data.volumeOutput    = volumeOutput;

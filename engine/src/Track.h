@@ -19,7 +19,8 @@ enum TrackState
 struct TrackData
 {
     int   index;
-    float x, y, w, h, r;
+    float x, y, w, h;
+    float volumeRadius;
     float volumeLowpass;
     float volumeThreshold;
     float volumeOutput;
@@ -56,13 +57,16 @@ public:
 
     void updateVolumeByUserPosition(float x, float y)
     {
-        float dx = (trackData.x - x) / trackData.w * 2.0f + 1.0f;
-        float dy = (trackData.y - y) / trackData.h * 2.0f + 1.0f;
+        float dx = fabsf(x - trackData.x) - trackData.w;
+        float dy = fabsf(y - trackData.y) - trackData.h;
 
-        float c = sqrtf(dx * dx + dy * dy) / trackData.r;
+        if (dx < 0.0f) dx = 0.0f;
+        if (dy < 0.0f) dy = 0.0f;
+
+        float c = sqrtf(dx * dx + dy * dy) / trackData.volumeRadius;
 
         // Gaussian distribution
-        volumeSet = expf(-0.69f * c * c); // Need the square?
+        volumeSet = expf(-0.69f * c * c);
 
         // Cosine distribution
         // if (c > 1.0f) c = 1.0f;
