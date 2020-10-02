@@ -16,7 +16,7 @@
 #define AUDIO_CHANNELS_IN   0
 #define AUDIO_CHANNELS_OUT  2
 
-#define NUMBER_OF_TRACKS    30
+#define NUMBER_OF_TRACKS    31
 
 #define LEFT                0
 #define RIGHT               1
